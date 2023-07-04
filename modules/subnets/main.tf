@@ -21,6 +21,9 @@ resource "google_compute_subnetwork" "subnetwork" {
     ip_cidr_range = var.subnets[count.index].secondary_ip_range.ip_cidr_range
   }
 
+  lifecycle {
+    ignore_changes = [secondary_ip_range]
+  }
   purpose          = var.purpose
   role             = var.role
   stack_type       = var.stack_type

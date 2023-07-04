@@ -22,3 +22,8 @@ output "vpc_selflink" {
   description = "The URI (self-link) of the VPC network."
   value       = module.vpc.network_self_link
 }
+
+output "subnets" {
+  value = [for network in module.subnets.subnets : network.name]
+  description = "List of Subnets created"
+}

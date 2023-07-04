@@ -78,7 +78,16 @@ variable "vpn_zone" {
 }
 
 variable "subnets" {
-  type        = list(map(string))
+  type        = list(object({
+    name                = string
+    ip_cidr_range       = string
+    secondary_ip_range = object({
+      range_name      = string
+      ip_cidr_range   = string
+    })
+    subnet_private_access      = bool
+    subnet_private_ipv6_access = bool
+  }))
   description = "The list of subnets being created"
   default = []
 }
