@@ -59,18 +59,6 @@ variable "enable_nat_gateway" {
   type        = bool
 }
 
-variable "public_subnet_cidr" {
-  description = "The IP and CIDR range of the public subnet being created."
-  default     = "10.160.0.0/20"
-  type        = string
-}
-
-variable "private_subnet_cidr" {
-  description = "The IP and CIDR range of the private subnet being created."
-  default     = "10.190.0.0/20"
-  type        = string
-}
-
 variable "region" {
   description = "The region where the resources will be deployed."
   default     = "asia-south1"
@@ -79,24 +67,24 @@ variable "region" {
 
 variable "source_subnetwork_ip_ranges_to_nat" {
   description = "(Optional) Specifies how NAT should be configured per Subnetwork. Valid values include: ALL_SUBNETWORKS_ALL_IP_RANGES, ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES, LIST_OF_SUBNETWORKS. Changing this forces a new NAT to be created. Defaults to ALL_SUBNETWORKS_ALL_IP_RANGES."
-  default     = "LIST_OF_SUBNETWORKS"
+  default     = "ALL_SUBNETWORKS_ALL_IP_RANGES"
   type        = string
 }
 
-variable "zone" {
+variable "vpn_zone" {
   description = "The zone where the VPN server will be located."
   default     = "asia-south1-a"
   type        = string
 }
 
-variable "secondary_range_subnet_01" {
-  description = "An optional secondary IP range for subnet 01."
-  default     = []
-  type        = any
+variable "subnets" {
+  type        = list(map(string))
+  description = "The list of subnets being created"
+  default = []
 }
 
-variable "secondary_range_subnet_02" {
-  description = "An optional secondary IP range for subnet 02."
-  default     = []
-  type        = any
+variable "secondary_ranges" {
+  type        = map(list(object({ range_name = string, ip_cidr_range = string })))
+  description = "Secondary ranges that will be used in some of the subnets"
+  default     = {}
 }

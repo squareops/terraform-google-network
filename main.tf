@@ -3,8 +3,6 @@ locals {
   project_name = var.project_name
   environment  = var.environment
   name         = var.name
-  subnet_01    = format("%s-%s-public-subnet", local.name, local.environment)
-  subnet_02    = var.enable_nat_gateway ? format("%s-%s-private-subnet", local.name, local.environment) : format("%s-%s-public-subnet-2", local.name, local.environment)
 }
 
 module "vpc" {
@@ -14,33 +12,19 @@ module "vpc" {
   project_id   = local.project_name
   network_name = format("%s-%s-vpc", local.name, local.environment)
   routing_mode = "GLOBAL"
-  subnets = [
-    {
-      subnet_name               = local.subnet_01
-      subnet_ip                 = var.public_subnet_cidr
-      subnet_region             = local.region
-      ubnet_private_access      = "true"
-      subnet_flow_logs          = var.flow_logs
-      subnet_flow_logs_sampling = 0.7
-      subnet_flow_logs_metadata = "INCLUDE_ALL_METADATA"
-      subnet_flow_logs_filter   = "false"
-    },
-    {
-      subnet_name               = local.subnet_02
-      subnet_ip                 = var.private_subnet_cidr
-      subnet_region             = local.region
-      subnet_private_access     = "true"
-      subnet_flow_logs          = var.flow_logs
-      subnet_flow_logs_sampling = 0.7
-      subnet_flow_logs_metadata = "INCLUDE_ALL_METADATA"
-      subnet_flow_logs_filter   = "false"
-    }
-  ]
-  secondary_ranges = {
-    (local.subnet_01) = var.secondary_range_subnet_01
+  subnets = [] 
+  secondary_ranges = var.secondary_ranges
+}
 
-    (local.subnet_02) = var.secondary_range_subnet_02
-  }
+module "subnets" {
+  depends_on = [module.vpc]
+  source = "./modules/subnets"
+
+  subnets = var.subnets
+  region = var.region
+  network_name = module.vpc.network_name
+  project_id = local.project_name
+
 }
 
 resource "google_compute_router" "router" {
@@ -53,6 +37,7 @@ resource "google_compute_router" "router" {
 }
 
 module "cloud-nat" {
+  depends_on = [module.vpc]
   source                             = "terraform-google-modules/cloud-nat/google"
   version                            = "3.0.0"
   count                              = var.enable_nat_gateway ? 1 : 0
@@ -61,11 +46,6 @@ module "cloud-nat" {
   router                             = google_compute_router.router[0].name
   name                               = format("%s-%s-nat", local.name, local.environment)
   source_subnetwork_ip_ranges_to_nat = var.source_subnetwork_ip_ranges_to_nat
-  subnetworks = [{
-    name                     = format("%s-%s-private-subnet", local.name, local.environment)
-    source_ip_ranges_to_nat  = ["ALL_IP_RANGES"]
-    secondary_ip_range_names = []
-  }]
   log_config_enable                = var.log_config_enable_nat
   log_config_filter                = var.log_config_filter_nat
   min_ports_per_vm                 = "128"
@@ -141,4 +121,16 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   network                 = module.vpc.network_id
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_block[count.index].name]
+}
+
+module "vpn_server" {
+  depends_on = [module.subnets]
+  source = "./modules/vpn"
+  count = var.create_vpn ? 1 : 0
+  project_name = local.project_name
+  name = local.name
+  environment = local.environment
+  zone = var.vpn_zone
+  network_name = module.vpc.network_name
+  subnetwork = var.subnets[count.index].name
 }
