@@ -1,7 +1,7 @@
 ## GCP Network Variables
 variable "create_vpn" {
   description = "Specifies whether to create a VPN server."
-  default     = true
+  default     = false
   type        = bool
 }
 
@@ -55,7 +55,7 @@ variable "project_name" {
 
 variable "enable_nat_gateway" {
   description = "Specifies whether to create a NAT gateway."
-  default     = true
+  default     = false
   type        = bool
 }
 
@@ -78,18 +78,18 @@ variable "vpn_zone" {
 }
 
 variable "subnets" {
-  type        = list(object({
-    name                = string
-    ip_cidr_range       = string
+  type = list(object({
+    name          = string
+    ip_cidr_range = string
     secondary_ip_range = object({
-      range_name      = string
-      ip_cidr_range   = string
+      range_name    = string
+      ip_cidr_range = string
     })
     subnet_private_access      = bool
     subnet_private_ipv6_access = bool
   }))
   description = "The list of subnets being created"
-  default = []
+  default     = []
 }
 
 variable "secondary_ranges" {

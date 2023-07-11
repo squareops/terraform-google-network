@@ -1,11 +1,11 @@
 variable "subnets" {
   description = "List of subnets to create."
   type = list(object({
-    name                = string
-    ip_cidr_range       = string
+    name          = string
+    ip_cidr_range = string
     secondary_ip_range = object({
-      range_name      = string
-      ip_cidr_range   = string
+      range_name    = string
+      ip_cidr_range = string
     })
     subnet_private_access      = bool
     subnet_private_ipv6_access = bool
@@ -31,19 +31,19 @@ variable "project_id" {
 variable "purpose" {
   description = "The purpose of the subnetworks."
   type        = string
-  default = "PRIVATE"
+  default     = "PRIVATE"
 }
 
 variable "role" {
   description = "The role of the subnetworks."
   type        = string
-  default = "ACTIVE"
+  default     = "ACTIVE"
 }
 
 variable "stack_type" {
   description = "The stack type of the subnetworks."
   type        = string
-  default = "IPV4_ONLY"
+  default     = "IPV4_ONLY"
 }
 
 variable "private_ip_google_access" {
