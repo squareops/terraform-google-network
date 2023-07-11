@@ -24,7 +24,7 @@ module "subnets" {
   region       = var.region
   network_name = module.vpc.network_name
   project_id   = local.project_name
-
+  log_config   = var.log_config
 }
 
 resource "google_compute_router" "router" {
@@ -133,4 +133,5 @@ module "vpn_server" {
   zone         = var.vpn_zone
   network_name = module.vpc.network_name
   subnetwork   = var.subnets[count.index].name
+  machine_type = var.machine_type
 }

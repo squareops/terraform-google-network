@@ -9,7 +9,7 @@ sudo apt update
 sudo apt --assume-yes install libssl1.1
 wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
 echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
-sudo apt update && sudo apt --assume-yes install pritunl mongodb-org 
+sudo apt update && sudo apt --assume-yes install pritunl mongodb-org
 sudo systemctl start pritunl mongod
 sudo systemctl enable pritunl mongod
 #Stop Pritunl
