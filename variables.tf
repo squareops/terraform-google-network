@@ -17,6 +17,12 @@ variable "environment" {
   type        = string
 }
 
+variable "routing_mode" {
+  type        = string
+  default     = "GLOBAL"
+  description = "The network routing mode (default 'GLOBAL')"
+}
+
 variable "log_config" {
   description = "The logging options for the subnetwork flow logs. Setting this value to `null` will disable them. See https://www.terraform.io/docs/providers/google/r/compute_subnetwork.html for more information and examples."
   type = object({
