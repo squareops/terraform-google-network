@@ -11,7 +11,7 @@ module "vpc" {
 
   project_id       = local.project_name
   network_name     = format("%s-%s-vpc", local.name, local.environment)
-  routing_mode     = "GLOBAL"
+  routing_mode     = var.routing_mode
   subnets          = []
   secondary_ranges = var.secondary_ranges
 }
