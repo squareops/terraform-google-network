@@ -11,13 +11,12 @@ resource "google_compute_subnetwork" "subnetwork" {
   network                    = var.network_name
   project                    = var.project_id
   dynamic "log_config" {
-      for_each = var.log_config == null ? [] : tolist([var.log_config])
+    for_each = var.log_config == null ? [] : tolist([var.log_config])
 
-      content {
-        aggregation_interval = var.log_config.aggregation_interval
-        flow_sampling        = var.log_config.flow_sampling
-        metadata             = var.log_config.metadata
-      }
+    content {
+      aggregation_interval = var.log_config.aggregation_interval
+      flow_sampling        = var.log_config.flow_sampling
+      metadata             = var.log_config.metadata
     }
   }
   log_config {
