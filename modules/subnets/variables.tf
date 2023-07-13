@@ -1,20 +1,10 @@
-variable "subnets" {
-  description = "List of subnets to create."
-  type = list(object({
-    name          = string
-    ip_cidr_range = string
-    secondary_ip_range = object({
-      range_name    = string
-      ip_cidr_range = string
-    })
-    subnet_private_access      = bool
-    subnet_private_ipv6_access = bool
-  }))
-  default = []
-}
-
 variable "region" {
   description = "The region where the subnetworks will be created."
+  type        = string
+}
+
+variable "name" {
+  description = "The suffix name for the resources being created."
   type        = string
 }
 
@@ -26,6 +16,12 @@ variable "network_name" {
 variable "project_id" {
   description = "The ID of the project where the subnetworks will be created."
   type        = string
+}
+
+variable "flow_logs" {
+  type        = bool
+  default     = false
+  description = "Enable or disable flow logging."
 }
 
 variable "log_config" {
@@ -71,4 +67,21 @@ variable "private_ipv6_google_access" {
   description = "Flag to enable or disable private IPv6 Google access."
   type        = bool
   default     = null
+}
+
+variable "secondary_range_names" {
+  type        = list(string)
+  default     = []
+  description = "List of secondary subnet range names."
+}
+
+variable "secondary_ip_cidr_ranges" {
+  type        = list(string)
+  default     = []
+  description = "List of secondary subnet IP CIDR ranges."
+}
+
+variable "ip_cidr_range" {
+  type        = string
+  description = "The IP CIDR range for the subnet."
 }

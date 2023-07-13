@@ -23,6 +23,30 @@ variable "routing_mode" {
   description = "The network routing mode (default 'GLOBAL')"
 }
 
+variable "description" {
+  type        = string
+  description = "An optional description of this resource. The resource must be recreated to modify this field."
+  default     = ""
+}
+
+variable "auto_create_subnetworks" {
+  type        = bool
+  description = "When set to true, the network is created in 'auto subnet mode' and it will create a subnet for each region automatically across the 10.128.0.0/9 address range. When set to false, the network is created in 'custom subnet mode' so the user can explicitly connect subnetwork resources."
+  default     = false
+}
+
+variable "delete_default_internet_gateway_routes" {
+  type        = bool
+  description = "If set, ensure that all routes within the network specified whose names begin with 'default-route' and with a next hop of 'default-internet-gateway' are deleted"
+  default     = false
+}
+
+variable "mtu" {
+  type        = number
+  description = "The network MTU (If set to 0, meaning MTU is unset - defaults to '1460'). Recommended values: 1460 (default for historic reasons), 1500 (Internet default), or 8896 (for Jumbo packets). Allowed are all values in the range 1300 to 8896, inclusively."
+  default     = 0
+}
+
 variable "log_config" {
   description = "The logging options for the subnetwork flow logs. Setting this value to `null` will disable them. See https://www.terraform.io/docs/providers/google/r/compute_subnetwork.html for more information and examples."
   type = object({
@@ -86,29 +110,35 @@ variable "source_subnetwork_ip_ranges_to_nat" {
   type        = string
 }
 
-variable "vpn_zone" {
-  description = "The zone where the VPN server will be located."
-  default     = "asia-south1-a"
-  type        = string
-}
-
-variable "subnets" {
-  type = list(object({
-    name          = string
-    ip_cidr_range = string
-    secondary_ip_range = object({
-      range_name    = string
-      ip_cidr_range = string
-    })
-    subnet_private_access      = bool
-    subnet_private_ipv6_access = bool
-  }))
-  description = "The list of subnets being created"
+variable "secondary_range_names" {
+  type        = list(string)
   default     = []
+  description = "List of secondary subnet range names."
 }
 
-variable "secondary_ranges" {
-  type        = map(list(object({ range_name = string, ip_cidr_range = string })))
-  description = "Secondary ranges that will be used in some of the subnets"
-  default     = {}
+variable "secondary_ip_cidr_ranges" {
+  type        = list(string)
+  default     = []
+  description = "List of secondary subnet IP CIDR ranges."
+}
+
+variable "ip_cidr_range" {
+  type        = string
+  description = "The IP CIDR range for the subnet."
+}
+
+variable "private_ip_google_access" {
+  type        = bool
+  description = "Whether instances in the subnet can access Google services using private IP addresses."
+}
+
+variable "private_ipv6_google_access" {
+  type        = bool
+  description = "Whether instances in the subnet can access Google services using IPv6 addresses."
+}
+
+variable "flow_logs" {
+  type        = bool
+  default     = false
+  description = "Enable or disable flow logging for subnet."
 }

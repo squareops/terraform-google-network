@@ -5,39 +5,44 @@ locals {
   name         = var.name
 }
 
-module "vpc" {
-  source  = "terraform-google-modules/network/google"
-  version = "~> 7.0"
-
-  project_id       = local.project_name
-  network_name     = format("%s-%s-vpc", local.name, local.environment)
-  routing_mode     = var.routing_mode
-  subnets          = []
-  secondary_ranges = var.secondary_ranges
+resource "google_compute_network" "network" {
+  name                            = "${var.name}-vpc"
+  auto_create_subnetworks         = var.auto_create_subnetworks
+  routing_mode                    = var.routing_mode
+  project                         = var.project_name
+  description                     = var.description
+  delete_default_routes_on_create = var.delete_default_internet_gateway_routes
+  mtu                             = var.mtu
 }
 
 module "subnets" {
-  depends_on = [module.vpc]
+  depends_on = [google_compute_network.network]
   source     = "./modules/subnets"
 
-  subnets      = var.subnets
-  region       = var.region
-  network_name = module.vpc.network_name
-  project_id   = local.project_name
-  log_config   = var.log_config
+  name                       = format("%s-%s-subnet", var.environment, var.name)
+  ip_cidr_range              = var.ip_cidr_range
+  private_ip_google_access   = var.private_ip_google_access
+  private_ipv6_google_access = var.private_ipv6_google_access
+  region                     = var.region
+  secondary_range_names      = var.secondary_range_names
+  secondary_ip_cidr_ranges   = var.secondary_ip_cidr_ranges
+  network_name               = google_compute_network.network.self_link
+  project_id                 = local.project_name
+  flow_logs                  = var.flow_logs
+  log_config                 = var.log_config
 }
 
 resource "google_compute_router" "router" {
   count      = var.enable_nat_gateway ? 1 : 0
   project    = local.project_name
-  depends_on = [module.vpc]
+  depends_on = [google_compute_network.network]
   name       = format("%s-%s-router", local.name, local.environment)
-  network    = module.vpc.network_name
+  network    = google_compute_network.network.self_link
   region     = local.region
 }
 
 module "cloud-nat" {
-  depends_on                         = [module.vpc]
+  depends_on                         = [google_compute_network.network]
   source                             = "terraform-google-modules/cloud-nat/google"
   version                            = "4.0.0"
   count                              = var.enable_nat_gateway ? 1 : 0
@@ -59,8 +64,8 @@ module "firewall_rules" {
   source       = "terraform-google-modules/network/google//modules/firewall-rules"
   version      = "~> 7.0"
   project_id   = local.project_name
-  network_name = module.vpc.network_name
-  depends_on   = [module.vpc]
+  network_name = google_compute_network.network.self_link
+  depends_on   = [google_compute_network.network]
 
   rules = [
     {
@@ -112,13 +117,13 @@ resource "google_compute_global_address" "private_ip_block" {
   address_type  = "INTERNAL"
   ip_version    = "IPV4"
   prefix_length = 20
-  network       = module.vpc.network_id
+  network       = google_compute_network.network.self_link
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
   count                   = var.db_private_access ? 1 : 0
   depends_on              = [google_compute_global_address.private_ip_block]
-  network                 = module.vpc.network_id
+  network                 = google_compute_network.network.self_link
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_block[count.index].name]
 }
@@ -130,8 +135,8 @@ module "vpn_server" {
   project_name = local.project_name
   name         = local.name
   environment  = local.environment
-  zone         = var.vpn_zone
-  network_name = module.vpc.network_name
-  subnetwork   = var.subnets[count.index].name
+  zone         = format("%s-a", var.region)
+  network_name = google_compute_network.network.self_link
+  subnetwork   = module.subnets.subnet_name
   machine_type = var.machine_type
 }

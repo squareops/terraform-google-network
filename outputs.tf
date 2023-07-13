@@ -3,9 +3,24 @@ output "region" {
   value       = var.region
 }
 
-output "vpc_name" {
-  description = "The name of the VPC network."
-  value       = module.vpc.network_name
+output "network" {
+  value       = google_compute_network.network
+  description = "The VPC resource being created"
+}
+
+output "network_name" {
+  value       = google_compute_network.network.name
+  description = "The name of the VPC being created"
+}
+
+output "network_id" {
+  value       = google_compute_network.network.id
+  description = "The ID of the VPC being created"
+}
+
+output "network_self_link" {
+  value       = google_compute_network.network.self_link
+  description = "The URI of the VPC being created"
 }
 
 output "vpn_name" {
@@ -18,12 +33,12 @@ output "vpn_zone" {
   value       = var.create_vpn ? module.vpn_server[0].vpn_zone : null
 }
 
-output "vpc_selflink" {
-  description = "The URI (self-link) of the VPC network."
-  value       = module.vpc.network_self_link
+output "subnet_name" {
+  value       = module.subnets.subnet_name
+  description = "List of Subnets created"
 }
 
-output "subnets" {
-  value       = [for network in module.subnets.subnets : network.name]
-  description = "List of Subnets created"
+output "secondary_ip_range" {
+  value       = module.subnets.secondary_ip_range
+  description = "The details of secondary ip range of subnet"
 }
