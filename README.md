@@ -1,8 +1,42 @@
-# Terraform Network Module
+# GCP VPC Network Terraform Module
 
+![squareops_avatar]
+
+[squareops_avatar]: https://squareops.com/wp-content/uploads/2022/12/squareops-logo.png
+
+### [SquareOps Technologies](https://squareops.com/) Your DevOps Partner for Accelerating cloud journey.
+
+<br>
+Terraform module to create Networking resources for workload deployment on Google Cloud.
+
+## Usage Example
+
+```hcl
+module "network" {
+  source                                          = "<path-to-module>"
+  name                                            = "skaf"
+  project_name                                    = "<project_name>"
+  environment                                     = "dev"
+  region                                          = "asia-south1"
+  ip_cidr_range                                   = "10.0.0.0/16"
+  secondary_range_names                           = ["range-1"]
+  secondary_ip_cidr_ranges                        = ["192.168.0.0/20"]
+  private_ip_google_access                        = true
+  private_ipv6_google_access                      = false
+  enable_nat_gateway                              = true
+  db_private_access                               = true
+  create_vpn                                      = true
+  flow_logs                                       = true
+  log_config_enable_nat                           = true
+}
+```
+Refer [examples]() for more details.
+
+## Important Note
+To prevent destruction interruptions, any resources that have been created outside of Terraform and attached to the resources provisioned by Terraform must be deleted before the module is destroyed.
 This module makes it easy to set up a new VPC Network in GCP by defining your network and subnet ranges in a concise syntax.
 
-It supports creating:
+This module supports creating:
 
 - A Google Virtual Private Network (VPC)
 - A Subnet within the VPC
