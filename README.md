@@ -13,9 +13,9 @@ Terraform module to create Networking resources for workload deployment on Googl
 
 ```hcl
 module "network" {
-  source                                          = "<path-to-module>"
-  name                                            = "skaf"
-  project_name                                    = "<project_name>"
+  source                                          = "squareops/network/google""
+  name                                            = "identifier"
+  project_name                                    = "project_name"
   environment                                     = "dev"
   region                                          = "asia-south1"
   ip_cidr_range                                   = "10.0.0.0/16"
@@ -101,7 +101,7 @@ In order to execute this module you must have a Service Account with the followi
 | <a name="input_log_config_filter_nat"></a> [log\_config\_filter\_nat](#input\_log\_config\_filter\_nat) | Specifies the desired filtering of logs on this NAT. Valid values are: "ERRORS\_ONLY", "TRANSLATIONS\_ONLY", "ALL". | `string` | `"ALL"` | no |
 | <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | The machine type for the VPN server. | `string` | `"e2-medium"` | no |
 | <a name="input_mtu"></a> [mtu](#input\_mtu) | The network MTU (If set to 0, meaning MTU is unset - defaults to '1460'). Recommended values: 1460 (default for historic reasons), 1500 (Internet default), or 8896 (for Jumbo packets). Allowed are all values in the range 1300 to 8896, inclusively. | `number` | `0` | no |
-| <a name="input_name"></a> [name](#input\_name) | The suffix name for the resources being created. | `string` | `"skaf"` | no |
+| <a name="input_name"></a> [name](#input\_name) | The suffix name for the resources being created. | `string` | n/a | yes |
 | <a name="input_private_ip_google_access"></a> [private\_ip\_google\_access](#input\_private\_ip\_google\_access) | Whether instances in the subnet can access Google services using private IP addresses. | `bool` | n/a | yes |
 | <a name="input_private_ipv6_google_access"></a> [private\_ipv6\_google\_access](#input\_private\_ipv6\_google\_access) | Whether instances in the subnet can access Google services using IPv6 addresses. | `bool` | n/a | yes |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | The project ID where the resources will be deployed. | `string` | `"fresh-sanctuary-389006"` | no |

@@ -13,7 +13,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | ../../ | n/a |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | squareops/network/google | n/a |
 
 ## Resources
 

@@ -82,7 +82,6 @@ variable "machine_type" {
 
 variable "name" {
   description = "The suffix name for the resources being created."
-  default     = "skaf"
   type        = string
 }
 

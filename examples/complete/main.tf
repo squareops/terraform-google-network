@@ -6,7 +6,7 @@ locals {
 }
 
 module "vpc" {
-  source                     = "../../"
+  source                     = "squareops/network/google"
   name                       = local.name
   project_name               = local.project_name
   environment                = local.environment
