@@ -45,10 +45,9 @@ This module supports creating:
 - A VPN Server with External IP
 
 ### Configure a Service Account
-In order to execute this module you must have a Service Account with the following roles on the organization or folder:
+In order to execute this module you must have a Service Account with the roles mentioned in [IAM.md](https://github.com/sq-ia/terraform-google-network/blob/main/IAM.md).
 
-- roles/compute.networkAdmin
-- roles/compute.securityAdmin
+
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
