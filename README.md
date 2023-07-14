@@ -13,7 +13,7 @@ Terraform module to create Networking resources for workload deployment on Googl
 
 ```hcl
 module "network" {
-  source                                          = "squareops/network/google""
+  source                                          = "squareops/network/google"
   name                                            = "identifier"
   project_name                                    = "project_name"
   environment                                     = "dev"
