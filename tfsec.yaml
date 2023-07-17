@@ -1,0 +1,6 @@
+exclude:
+  - google-compute-vm-disk-encryption-customer-key # VM Encrypted with GCP managed key
+  - google-compute-enable-shielded-vm-im # Disabled monitoring
+  - google-compute-enable-shielded-vm-vtpm 
+  - google-compute-no-public-ip # VPN IP
+  - google-compute-no-project-wide-ssh-keys
