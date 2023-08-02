@@ -36,8 +36,7 @@ No modules.
 | <a name="input_purpose"></a> [purpose](#input\_purpose) | The purpose of the subnetworks. | `string` | `"PRIVATE"` | no |
 | <a name="input_region"></a> [region](#input\_region) | The region where the subnetworks will be created. | `string` | n/a | yes |
 | <a name="input_role"></a> [role](#input\_role) | The role of the subnetworks. | `string` | `"ACTIVE"` | no |
-| <a name="input_secondary_ip_cidr_ranges"></a> [secondary\_ip\_cidr\_ranges](#input\_secondary\_ip\_cidr\_ranges) | List of secondary subnet IP CIDR ranges. | `list(string)` | `[]` | no |
-| <a name="input_secondary_range_names"></a> [secondary\_range\_names](#input\_secondary\_range\_names) | List of secondary subnet range names. | `list(string)` | `[]` | no |
+| <a name="input_secondary_ip_range"></a> [secondary\_ip\_range](#input\_secondary\_ip\_range) | n/a | <pre>list(object({<br>    range_name    = string<br>    ip_cidr_range = string<br>  }))</pre> | n/a | yes |
 | <a name="input_stack_type"></a> [stack\_type](#input\_stack\_type) | The stack type of the subnetworks. | `string` | `"IPV4_ONLY"` | no |
 
 ## Outputs

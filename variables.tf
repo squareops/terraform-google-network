@@ -23,12 +23,6 @@ variable "routing_mode" {
   description = "The network routing mode (default 'GLOBAL')"
 }
 
-variable "description" {
-  type        = string
-  description = "An optional description of this resource. The resource must be recreated to modify this field."
-  default     = ""
-}
-
 variable "auto_create_subnetworks" {
   type        = bool
   description = "When set to true, the network is created in 'auto subnet mode' and it will create a subnet for each region automatically across the 10.128.0.0/9 address range. When set to false, the network is created in 'custom subnet mode' so the user can explicitly connect subnetwork resources."
@@ -60,12 +54,6 @@ variable "log_config" {
     flow_sampling        = 0.5
     metadata             = "INCLUDE_ALL_METADATA"
   }
-}
-
-variable "log_config_enable_nat" {
-  description = "Indicates whether to enable exporting of logs for NAT."
-  default     = false
-  type        = bool
 }
 
 variable "log_config_filter_nat" {
@@ -109,16 +97,15 @@ variable "source_subnetwork_ip_ranges_to_nat" {
   type        = string
 }
 
-variable "secondary_range_names" {
-  type        = list(string)
-  default     = []
-  description = "List of secondary subnet range names."
-}
+variable "secondary_ip_range" {
+  type = list(object({
+    range_name    = string
+    ip_cidr_range = string
+  }))
 
-variable "secondary_ip_cidr_ranges" {
-  type        = list(string)
   default     = []
-  description = "List of secondary subnet IP CIDR ranges."
+  description = "List of secondary IP ranges for the subnetwork. Each element in the list must have 'range_name' and 'ip_cidr_range' attributes."
+
 }
 
 variable "ip_cidr_range" {
@@ -129,15 +116,17 @@ variable "ip_cidr_range" {
 variable "private_ip_google_access" {
   type        = bool
   description = "Whether instances in the subnet can access Google services using private IP addresses."
+  default     = true
 }
 
 variable "private_ipv6_google_access" {
   type        = bool
   description = "Whether instances in the subnet can access Google services using IPv6 addresses."
+  default     = false
 }
 
-variable "flow_logs" {
+variable "vpc_flow_logs" {
   type        = bool
   default     = false
-  description = "Enable or disable flow logging for subnet."
+  description = "Enable or disable flow logging for subnets."
 }
