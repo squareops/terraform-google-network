@@ -10,7 +10,6 @@ resource "google_compute_network" "network" {
   auto_create_subnetworks         = var.auto_create_subnetworks
   routing_mode                    = var.routing_mode
   project                         = var.project_name
-  description                     = var.description
   delete_default_routes_on_create = var.delete_default_internet_gateway_routes
   mtu                             = var.mtu
 }
@@ -24,11 +23,10 @@ module "subnets" {
   private_ip_google_access   = var.private_ip_google_access
   private_ipv6_google_access = var.private_ipv6_google_access
   region                     = var.region
-  secondary_range_names      = var.secondary_range_names
-  secondary_ip_cidr_ranges   = var.secondary_ip_cidr_ranges
+  secondary_ip_range         = var.secondary_ip_range
   network_name               = google_compute_network.network.self_link
   project_id                 = local.project_name
-  flow_logs                  = var.flow_logs
+  flow_logs                  = var.vpc_flow_logs
   log_config                 = var.log_config
 }
 
@@ -51,7 +49,7 @@ module "cloud-nat" {
   router                             = google_compute_router.router[0].name
   name                               = format("%s-%s-nat", local.name, local.environment)
   source_subnetwork_ip_ranges_to_nat = var.source_subnetwork_ip_ranges_to_nat
-  log_config_enable                  = var.log_config_enable_nat
+  log_config_enable                  = var.vpc_flow_logs
   log_config_filter                  = var.log_config_filter_nat
   min_ports_per_vm                   = "128"
   icmp_idle_timeout_sec              = "30"

@@ -19,18 +19,7 @@ resource "google_compute_subnetwork" "subnetwork" {
     }
   }
 
-  dynamic "secondary_ip_range" {
-    for_each = { for idx, range_name in var.secondary_range_names : idx => {
-      range_name    = range_name
-      ip_cidr_range = var.secondary_ip_cidr_ranges[idx]
-    } }
-
-    content {
-      range_name    = secondary_ip_range.value.range_name
-      ip_cidr_range = secondary_ip_range.value.ip_cidr_range
-    }
-  }
-
+  secondary_ip_range = var.secondary_ip_range
 
   purpose    = var.purpose
   role       = var.role

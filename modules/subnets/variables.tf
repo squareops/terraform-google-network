@@ -69,16 +69,11 @@ variable "private_ipv6_google_access" {
   default     = null
 }
 
-variable "secondary_range_names" {
-  type        = list(string)
-  default     = []
-  description = "List of secondary subnet range names."
-}
-
-variable "secondary_ip_cidr_ranges" {
-  type        = list(string)
-  default     = []
-  description = "List of secondary subnet IP CIDR ranges."
+variable "secondary_ip_range" {
+  type = list(object({
+    range_name    = string
+    ip_cidr_range = string
+  }))
 }
 
 variable "ip_cidr_range" {
