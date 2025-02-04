@@ -1,6 +1,6 @@
 module "service_accounts_vpn" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "~> 3.0"
+  version    = "~> 4.0"
   depends_on = [module.firewall_rules_vpn]
   project_id = var.project_name
   prefix     = var.name
@@ -76,7 +76,7 @@ resource "google_compute_instance" "default" {
 
 module "firewall_rules_vpn" {
   source       = "terraform-google-modules/network/google//modules/firewall-rules"
-  version      = "~> 7.0"
+  version      = "~> 9.0"
   project_id   = var.project_name
   network_name = var.network_name
 

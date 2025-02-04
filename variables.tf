@@ -98,19 +98,18 @@ variable "source_subnetwork_ip_ranges_to_nat" {
 }
 
 variable "secondary_ip_range" {
+  description = "List of secondary IP ranges for each private subnet"
   type = list(object({
     range_name    = string
     ip_cidr_range = string
   }))
-
-  default     = []
-  description = "List of secondary IP ranges for the subnetwork. Each element in the list must have 'range_name' and 'ip_cidr_range' attributes."
-
+  default = []
 }
 
 variable "ip_cidr_range" {
-  type        = string
+  type        = list(string)
   description = "The IP CIDR range for the subnet."
+  default     = []
 }
 
 variable "private_ip_google_access" {
@@ -129,4 +128,16 @@ variable "vpc_flow_logs" {
   type        = bool
   default     = false
   description = "Enable or disable flow logging for subnets."
+}
+
+variable "private_ip_cidr_range" {
+  description = "List of CIDR ranges for private subnets"
+  type        = list(string)
+  default     = []
+}
+
+variable "lb_ip_cidr_range" {
+  description = "The IP CIDR range for the subnet."
+  type        = string
+  default     = ""
 }

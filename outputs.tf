@@ -3,42 +3,62 @@ output "region" {
   value       = var.region
 }
 
-output "network" {
-  value       = google_compute_network.network
-  description = "The VPC resource being created"
+output "vpc_details" {
+  description = "Details of the VPC being created, including name, ID, and self-link."
+  value = {
+    name      = google_compute_network.network.name
+    id        = google_compute_network.network.id
+    self_link = google_compute_network.network.self_link
+  }
 }
 
-output "network_name" {
-  value       = google_compute_network.network.name
-  description = "The name of the VPC being created"
+output "vpn_details" {
+  description = "Details of the Pritunl VPN instance. Null if VPN creation is disabled."
+  value = var.create_vpn ? {
+    name = module.vpn_server[0].vpn_name
+    zone = module.vpn_server[0].vpn_zone
+  } : null
 }
 
-output "network_id" {
-  value       = google_compute_network.network.id
-  description = "The ID of the VPC being created"
+output "public_subnet_details" {
+  description = "Details of all public subnets created, including their names and CIDR ranges."
+  value = [
+    for subnet in module.subnets : {
+      name               = subnet.subnet_name
+      cidr               = subnet.subnet_cidr
+      # secondary_ip_range = subnet.secondary_ip_range
+    }
+  ]
 }
 
-output "network_self_link" {
-  value       = google_compute_network.network.self_link
-  description = "The URI of the VPC being created"
+output "private_subnet_details" {
+  description = "Details of all private subnets created, including their names, CIDR ranges, and secondary IP ranges."
+  value = [
+    for subnet in module.private_subnet : {
+      name               = subnet.name
+      private_ip_cidr    = subnet.private_ip_cidr
+      secondary_ip_range = subnet.secondary_ip_range
+    }
+  ]
 }
 
-output "vpn_name" {
-  description = "The name of the Pritunl VPN instance. Null if VPN creation is disabled."
-  value       = var.create_vpn ? module.vpn_server[0].vpn_name : null
+output "lb_subnet_details" {
+  description = "Details of LB subnets created, including their names and CIDR ranges."
+  value = [
+    for idx in range(length(module.LB_subnet.subnet_name)) : {
+      name = module.LB_subnet.subnet_name[idx]
+      cidr = module.LB_subnet.subnet_cidr[idx]
+    }
+  ]
 }
 
-output "vpn_zone" {
-  description = "The zone of the Pritunl VPN instance. Null if VPN creation is disabled."
-  value       = var.create_vpn ? module.vpn_server[0].vpn_zone : null
-}
-
-output "subnet_name" {
-  value       = module.subnets.subnet_name
-  description = "List of Subnets created"
-}
-
-output "secondary_ip_range" {
-  value       = module.subnets.secondary_ip_range
-  description = "The details of secondary ip range of subnet"
-}
+# output "lb_subnet_details" {
+#   description = "Details of LB subnets created, including their names and CIDR ranges."
+#   value = [
+#     for subnet in module.LB_subnet : {
+#       name               = subnet.subnet_name
+#       private_ip_cidr    = subnet.subnet_cidr
+#       # secondary_ip_range = subent.secondary_ip_range
+#     }
+#   ]
+# }

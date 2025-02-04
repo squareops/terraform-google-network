@@ -15,8 +15,8 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_firewall_rules_vpn"></a> [firewall\_rules\_vpn](#module\_firewall\_rules\_vpn) | terraform-google-modules/network/google//modules/firewall-rules | ~> 7.0 |
-| <a name="module_service_accounts_vpn"></a> [service\_accounts\_vpn](#module\_service\_accounts\_vpn) | terraform-google-modules/service-accounts/google | ~> 3.0 |
+| <a name="module_firewall_rules_vpn"></a> [firewall\_rules\_vpn](#module\_firewall\_rules\_vpn) | terraform-google-modules/network/google//modules/firewall-rules | ~> 9.0 |
+| <a name="module_service_accounts_vpn"></a> [service\_accounts\_vpn](#module\_service\_accounts\_vpn) | terraform-google-modules/service-accounts/google | ~> 4.0 |
 
 ## Resources
 

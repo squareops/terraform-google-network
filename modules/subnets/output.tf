@@ -1,9 +1,9 @@
 output "subnet_name" {
-  value       = google_compute_subnetwork.subnetwork.name
-  description = "The name of created subnet resources"
+  description = "The name of the created subnet resources."
+  value       = google_compute_subnetwork.subnetwork[*].name
 }
 
-output "secondary_ip_range" {
-  value       = google_compute_subnetwork.subnetwork.secondary_ip_range
-  description = "The details of secondary ip range of subnet"
+output "subnet_cidr" {
+  description = "The IPv4 CIDR ranges for the created subnets."
+  value       = google_compute_subnetwork.subnetwork[*].ip_cidr_range
 }

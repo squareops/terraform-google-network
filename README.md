@@ -75,8 +75,10 @@ In order to execute this module you must have a Service Account with the roles m
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cloud-nat"></a> [cloud-nat](#module\_cloud-nat) | terraform-google-modules/cloud-nat/google | 4.0.0 |
-| <a name="module_firewall_rules"></a> [firewall\_rules](#module\_firewall\_rules) | terraform-google-modules/network/google//modules/firewall-rules | ~> 7.0 |
+| <a name="module_LB_subnet"></a> [LB\_subnet](#module\_LB\_subnet) | ./modules/LB_subnet | n/a |
+| <a name="module_cloud-nat"></a> [cloud-nat](#module\_cloud-nat) | terraform-google-modules/cloud-nat/google | 5.0 |
+| <a name="module_firewall_rules"></a> [firewall\_rules](#module\_firewall\_rules) | terraform-google-modules/network/google//modules/firewall-rules | ~> 9.0 |
+| <a name="module_private_subnet"></a> [private\_subnet](#module\_private\_subnet) | ./modules/Private_subnet | n/a |
 | <a name="module_subnets"></a> [subnets](#module\_subnets) | ./modules/subnets | n/a |
 | <a name="module_vpn_server"></a> [vpn\_server](#module\_vpn\_server) | ./modules/vpn | n/a |
 
@@ -100,17 +102,19 @@ In order to execute this module you must have a Service Account with the roles m
 | <a name="input_enable_nat_gateway"></a> [enable\_nat\_gateway](#input\_enable\_nat\_gateway) | Specifies whether to create a NAT gateway. | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment name used for tagging and prefixing resource names being created. | `string` | `"dev"` | no |
 | <a name="input_ip_cidr_range"></a> [ip\_cidr\_range](#input\_ip\_cidr\_range) | The IP CIDR range for the subnet. | `string` | n/a | yes |
-| <a name="input_log_config"></a> [log\_config](#input\_log\_config) | The logging options for the subnetwork flow logs. Setting this value to `null` will disable them. See https://www.terraform.io/docs/providers/google/r/compute_subnetwork.html for more information and examples. | <pre>object({<br>    aggregation_interval = string<br>    flow_sampling        = number<br>    metadata             = string<br>  })</pre> | <pre>{<br>  "aggregation_interval": "INTERVAL_10_MIN",<br>  "flow_sampling": 0.5,<br>  "metadata": "INCLUDE_ALL_METADATA"<br>}</pre> | no |
+| <a name="input_lb_ip_cidr_range"></a> [lb\_ip\_cidr\_range](#input\_lb\_ip\_cidr\_range) | The IP CIDR range for the subnet. | `string` | n/a | yes |
+| <a name="input_log_config"></a> [log\_config](#input\_log\_config) | The logging options for the subnetwork flow logs. Setting this value to `null` will disable them. See https://www.terraform.io/docs/providers/google/r/compute_subnetwork.html for more information and examples. | <pre>object({<br/>    aggregation_interval = string<br/>    flow_sampling        = number<br/>    metadata             = string<br/>  })</pre> | <pre>{<br/>  "aggregation_interval": "INTERVAL_10_MIN",<br/>  "flow_sampling": 0.5,<br/>  "metadata": "INCLUDE_ALL_METADATA"<br/>}</pre> | no |
 | <a name="input_log_config_filter_nat"></a> [log\_config\_filter\_nat](#input\_log\_config\_filter\_nat) | Specifies the desired filtering of logs on this NAT. Valid values are: "ERRORS\_ONLY", "TRANSLATIONS\_ONLY", "ALL". | `string` | `"ALL"` | no |
 | <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | The machine type for the VPN server. | `string` | `"e2-medium"` | no |
 | <a name="input_mtu"></a> [mtu](#input\_mtu) | The network MTU (If set to 0, meaning MTU is unset - defaults to '1460'). Recommended values: 1460 (default for historic reasons), 1500 (Internet default), or 8896 (for Jumbo packets). Allowed are all values in the range 1300 to 8896, inclusively. | `number` | `0` | no |
 | <a name="input_name"></a> [name](#input\_name) | The suffix name for the resources being created. | `string` | n/a | yes |
+| <a name="input_private_ip_cidr_range"></a> [private\_ip\_cidr\_range](#input\_private\_ip\_cidr\_range) | List of CIDR ranges for private subnets | `list(string)` | `[]` | no |
 | <a name="input_private_ip_google_access"></a> [private\_ip\_google\_access](#input\_private\_ip\_google\_access) | Whether instances in the subnet can access Google services using private IP addresses. | `bool` | `true` | no |
 | <a name="input_private_ipv6_google_access"></a> [private\_ipv6\_google\_access](#input\_private\_ipv6\_google\_access) | Whether instances in the subnet can access Google services using IPv6 addresses. | `bool` | `false` | no |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | The project ID where the resources will be deployed. | `string` | `"fresh-sanctuary-389006"` | no |
 | <a name="input_region"></a> [region](#input\_region) | The region where the resources will be deployed. | `string` | `"asia-south1"` | no |
 | <a name="input_routing_mode"></a> [routing\_mode](#input\_routing\_mode) | The network routing mode (default 'GLOBAL') | `string` | `"GLOBAL"` | no |
-| <a name="input_secondary_ip_range"></a> [secondary\_ip\_range](#input\_secondary\_ip\_range) | List of secondary IP ranges for the subnetwork. Each element in the list must have 'range\_name' and 'ip\_cidr\_range' attributes. | <pre>list(object({<br>    range_name    = string<br>    ip_cidr_range = string<br>  }))</pre> | `[]` | no |
+| <a name="input_secondary_ip_range"></a> [secondary\_ip\_range](#input\_secondary\_ip\_range) | List of secondary IP ranges for each private subnet | <pre>list(object({<br/>    range_name    = string<br/>    ip_cidr_range = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_source_subnetwork_ip_ranges_to_nat"></a> [source\_subnetwork\_ip\_ranges\_to\_nat](#input\_source\_subnetwork\_ip\_ranges\_to\_nat) | (Optional) Specifies how NAT should be configured per Subnetwork. Valid values include: ALL\_SUBNETWORKS\_ALL\_IP\_RANGES, ALL\_SUBNETWORKS\_ALL\_PRIMARY\_IP\_RANGES, LIST\_OF\_SUBNETWORKS. Changing this forces a new NAT to be created. Defaults to ALL\_SUBNETWORKS\_ALL\_IP\_RANGES. | `string` | `"ALL_SUBNETWORKS_ALL_IP_RANGES"` | no |
 | <a name="input_vpc_flow_logs"></a> [vpc\_flow\_logs](#input\_vpc\_flow\_logs) | Enable or disable flow logging for subnets. | `bool` | `false` | no |
 
@@ -118,15 +122,12 @@ In order to execute this module you must have a Service Account with the roles m
 
 | Name | Description |
 |------|-------------|
-| <a name="output_network"></a> [network](#output\_network) | The VPC resource being created |
-| <a name="output_network_id"></a> [network\_id](#output\_network\_id) | The ID of the VPC being created |
-| <a name="output_network_name"></a> [network\_name](#output\_network\_name) | The name of the VPC being created |
-| <a name="output_network_self_link"></a> [network\_self\_link](#output\_network\_self\_link) | The URI of the VPC being created |
+| <a name="output_lb_subnet_details"></a> [lb\_subnet\_details](#output\_lb\_subnet\_details) | Details of LB subnets created, including their names and CIDR ranges. |
+| <a name="output_private_subnet_details"></a> [private\_subnet\_details](#output\_private\_subnet\_details) | Details of all private subnets created, including their names, CIDR ranges, and secondary IP ranges. |
+| <a name="output_public_subnet_details"></a> [public\_subnet\_details](#output\_public\_subnet\_details) | Details of all public subnets created, including their names and CIDR ranges. |
 | <a name="output_region"></a> [region](#output\_region) | The region where the VPC is located. |
-| <a name="output_secondary_ip_range"></a> [secondary\_ip\_range](#output\_secondary\_ip\_range) | The details of secondary ip range of subnet |
-| <a name="output_subnet_name"></a> [subnet\_name](#output\_subnet\_name) | List of Subnets created |
-| <a name="output_vpn_name"></a> [vpn\_name](#output\_vpn\_name) | The name of the Pritunl VPN instance. Null if VPN creation is disabled. |
-| <a name="output_vpn_zone"></a> [vpn\_zone](#output\_vpn\_zone) | The zone of the Pritunl VPN instance. Null if VPN creation is disabled. |
+| <a name="output_vpc_details"></a> [vpc\_details](#output\_vpc\_details) | Details of the VPC being created, including name, ID, and self-link. |
+| <a name="output_vpn_details"></a> [vpn\_details](#output\_vpn\_details) | Details of the Pritunl VPN instance. Null if VPN creation is disabled. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 
